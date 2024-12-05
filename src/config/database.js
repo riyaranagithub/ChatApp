@@ -1,9 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const connectDB = async () => {
-  await mongoose.connect(
-    "mongodb+srv://riyarana20062021:riya123@chatapp.xityg.mongodb.net/"
-  );
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Database connection established');
+  } catch (error) {
+    console.error('Database connection failed', error);
+  }
 };
 
-export default connectDB
+export default connectDB;
