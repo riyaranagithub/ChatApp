@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+import jwt from 'jsonwebtoken';
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
@@ -63,8 +64,7 @@ app.post('/login', async (req, res) => {
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
-
-    const token = process.env.JWT_SECRET; // Replace with proper token generation logic
+    const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ username: user.username, message: 'Login successful', token });
   } catch (error) {
     console.error('Login error:', error);
