@@ -14,7 +14,7 @@ console.log("selected",selectedUser)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userResponse = await fetch('http://localhost:3000/userall', { method: 'GET' });
+        const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/userall`, { method: 'GET' });
         if (userResponse.ok) {
           const data = await userResponse.json();
           setUsers(data);
@@ -27,7 +27,7 @@ console.log("selected",selectedUser)
     };
     const fetchMessage = async () => {
       try {
-        const userResponse = await fetch('http://localhost:3000/messageall', { method: 'GET' });
+        const userResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/messageall`, { method: 'GET' });
         if (userResponse.ok) {
           const data = await userResponse.json();
           setMessages(data);
@@ -42,7 +42,7 @@ console.log("selected",selectedUser)
 
     fetchData();
      fetchMessage();
-    socketRef.current = io('http://localhost:3000');
+    socketRef.current = io(`${process.env.REACT_APP_BACKEND_URL}`);
     socketRef.current.on('private message', (msg) => {
       // Update messages only if it's for the currently selected user
       if (msg.sender === selectedUser || msg.receiver === username) {
@@ -66,7 +66,7 @@ console.log("selected",selectedUser)
       setInput('');
   
       try {
-        const response = await fetch('http://localhost:3000/', {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
