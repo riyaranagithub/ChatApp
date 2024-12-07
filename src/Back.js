@@ -9,6 +9,12 @@ import { User, Message } from './models/user.js';
 import connectDB from './config/database.js';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get the directory name for the current file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -21,6 +27,15 @@ app.use(
   })
 );
 
+// Serve static files from the React app's dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Handle any requests to the root or other paths not handled by the backend
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+// WebSocket setup
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -118,6 +133,10 @@ io.on('connection', (socket) => {
     console.log('Broadcasting message:', msg);
     io.emit('chat message', msg);
   });
+});
+
+app.get('/status', (req, res) => {
+  res.json({ status: 'Server is up and running!' });
 });
 
 // Connect to the database and start the server
